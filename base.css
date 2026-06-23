@@ -120,3 +120,11 @@ margin-top: 5px;
 .custom-multicolumn-card .media {
   padding-bottom: 150px!important;
 }
+
+.pol-u {
+  padding-left: 0;
+}
+.pol-lis-i {
+  display: block;
+}
+
