@@ -106,3 +106,17 @@ svg#two {
 .customAnnouncementBar span {
 margin-top: 5px;
 }
+
+.custom-product-icon-label {
+  color: #999;
+}
+
+.custom-multicolumn-card .media img.multicolumn-card__image {
+  height: 150px!important;
+  border: 3px solid #999;
+  border-radius: 100%;
+  padding: 3rem;
+}
+.custom-multicolumn-card .media {
+  padding-bottom: 150px!important;
+}
