@@ -1,0 +1,117 @@
+<style>
+  .cartel-header-wrapper-{{ section.id }} {
+    /* Fallback color if no image is selected */
+    background-color: #da1d52; 
+    
+    /* Dynamically apply the selected background image */
+    {% if section.settings.bg_image != blank %}
+      background-image: url('{{ section.settings.bg_image | image_url: width: 2000 }}');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    {% endif %}
+    
+    color: #ffffff;
+    font-family: "Bebas Neue", sans-serif;
+    padding: 120px 20px; /* Increased padding to show off the background image */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle dark overlay to ensure white text is readable over vibrant images */
+  .cartel-header-overlay-{{ section.id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 1;
+  }
+  
+  .cartel-content-inner-{{ section.id }} {
+    position: relative;
+    z-index: 2;
+    width: 70%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .cartel-h1-container-{{ section.id }} {
+    position: relative;
+    display: inline-block;
+  }
+
+  .cartel-heading-{{ section.id }} {
+    font-size: calc(var(--font-heading-scale) * 6rem);
+    text-transform: uppercase;
+    color: #ffa052;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .cartel-subheading-{{ section.id }} {
+    letter-spacing: 3px!important;
+    margin-top: 15px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    color: #ffa052;
+  }
+
+  .cartel-subheading-{{ section.id }} .orange-highlight {
+    color: #F7966B!important;
+  }
+
+  .cartel-subheading-{{ section.id }} .pink-highlight {
+    color: #DA1D52!important;
+  }
+</style>
+
+<div class="cartel-header-wrapper-{{ section.id }}">
+  <div class="cartel-header-overlay-{{ section.id }}"></div>
+  
+  <div class="cartel-content-inner-{{ section.id }}">
+    <div class="cartel-h1-container-{{ section.id }}">
+      <h1 class="cartel-heading-{{ section.id }}">{{ section.settings.heading_text }}</h1>
+      <h2 class="cartel-subheading-{{ section.id }}">{{ section.settings.subheading_text }}</h2>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cartel Header 2 - Image",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image",
+      "info": "Upload your vibrant texture/image here. It will stretch to cover the section."
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "WE'VE DROPPED THE BOMB!"
+    },
+    {
+      "type": "text",
+      "id": "subheading_text",
+      "label": "Subheading Text",
+      "info": "You can use HTML tags like <span> to keep your color highlights.",
+      "default": "India’s 1st <span class=\"orange-highlight\">Caramelised</span> <span class=\"pink-highlight\">Chilli</span> Oil"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cartel Header 2 - Image",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
