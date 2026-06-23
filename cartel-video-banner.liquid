@@ -1,0 +1,110 @@
+<div class="custom-hero-gif color-{{ section.settings.color_scheme }}" 
+     style="background-image: url('{% if section.settings.background_image != blank %}{{ section.settings.background_image | image_url: width: 2000 }}{% endif %}');">
+  
+  <div class="custom-hero-gif__overlay" style="opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};"></div>
+  
+  <div class="page-width custom-hero-gif__content">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="h1">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    
+    {%- if section.settings.subtitle != blank -%}
+      <p class="subtitle">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .custom-hero-gif {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 65vh;
+    width: 100%;       /* Full viewport width */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgb(var(--color-background)); /* Fallback color */
+  }
+
+  /* Overlay to make text readable against busy GIFs */
+  .custom-hero-gif__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    z-index: 1;
+  }
+
+  .custom-hero-gif__content {
+    position: relative;
+    z-index: 2;
+    color: rgb(var(--color-foreground));
+    max-width: 640px!important;
+  }
+
+  /* Uses Origin's default heading styles via the 'h1' class, but renders an actual h2 tag */
+  .custom-hero-gif__content h2 {
+    margin-bottom: 1rem;
+    margin-top: 0;
+    color: inherit; 
+  }
+
+  .custom-hero-gif__content .subtitle {
+    font-size: calc(var(--font-heading-scale) * 1.5rem);
+    margin: 0;
+    color: inherit;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Full Height GIF Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image or GIF"
+    },
+    {
+      "type": "range",
+      "id": "image_overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "label": "Image overlay opacity",
+      "default": 30
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Custom Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle Paragraph",
+      "default": "Add a descriptive paragraph here to support the heading."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Full Height GIF Hero"
+    }
+  ]
+}
+{% endschema %}
