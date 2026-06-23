@@ -1,0 +1,476 @@
+{%- assign target_product = section.settings.product -%}
+
+{%- comment -%}
+  Calculate the live current inventory across all variants of the targeted product.
+{%- endcomment -%}
+{%- assign current_inventory = 0 -%}
+{%- if target_product != blank -%}
+  {%- for variant in target_product.variants -%}
+    {%- if variant.inventory_management == 'shopify' -%}
+      {%- assign current_inventory = current_inventory | plus: variant.inventory_quantity -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- assign total_inventory = section.settings.total_inventory -%}
+
+<style>
+  .cfp-section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    color: #111111;
+    font-family: var(--font-body-family);
+    overflow: hidden;
+  }
+
+  .cfp-container-{{ section.id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cfp-image-col, 
+  .cfp-info-col {
+    width: 100%;
+  }
+
+  .cfp-image-col img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cfp-info-col {
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cfp-title {
+    font-family: "Bebas Neue", Impact, sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    text-transform: uppercase;
+    margin: 0 0 15px 0;
+    line-height: 1;
+    letter-spacing: 1px;
+    color: #222;
+  }
+
+  .cfp-price-block {
+    font-size: 1.8rem;
+    line-height: calc(1 + .8 / var(--font-body-scale));
+    letter-spacing: .06rem;
+    font-weight: 600;
+    color: #222;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .cfp-taxes {
+    font-size: 1.4rem;
+    line-height: calc(1 + .8 / var(--font-body-scale));
+    letter-spacing: .06rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 25px;
+    opacity: 0.8;
+  }
+
+  .cfp-description {
+    margin-bottom: 30px;
+    max-width: 450px;
+    font-size: 1.8rem;
+    line-height: calc(1 + .8 / var(--font-body-scale));
+    letter-spacing: .06rem;
+    font-weight: 400;
+    color: #333;
+  }
+
+  /* --- STOCK TICKER / LIVE SUPPLY STYLES --- */
+  .cartel-ticker-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border-top: 1px dashed #333;
+    border-bottom: 1px dashed #333;
+    padding: 12px 5px;
+    margin-bottom: 25px;
+    max-width: 450px;
+    font-family: var(--font-body-family), monospace;
+  }
+
+  .cartel-status-label {
+    font-size: 1.4rem;
+    color: #333;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+  }
+
+  .cartel-status-label span.red-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #da1d1d;
+    border-radius: 50%;
+    margin-right: 10px;
+    animation: ticker-pulse-red 1s infinite;
+  }
+
+  .cartel-inventory-numbers {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #333;
+    letter-spacing: 2px;
+    margin-bottom: 0;
+  }
+
+  .cartel-current {
+    color: #DA1D52;
+  }
+
+  .cartel-slash, .cartel-total {
+    color: #333;
+  }
+  
+  .cartel-slash {
+    margin: 0 5px;
+    font-weight: normal;
+  }
+
+  @keyframes ticker-pulse-red {
+    0% { opacity: 1; box-shadow: 0 0 0 0 rgba(218, 29, 29, 0.8); }
+    70% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(218, 29, 82, 0); }
+    100% { opacity: 1; box-shadow: 0 0 0 0 rgba(218, 29, 82, 0); }
+  }
+  /* ------------------------------- */
+
+  .cfp-form {
+    margin-bottom: 25px;
+    max-width: 450px;
+  }
+
+  .cfp-submit-btn {
+    width: 100%;
+    background-color: #DA1D52;
+    color: #ffffff;
+    border: none;
+    padding: 16px 20px;
+    font-family: var(--font-body-family);
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    font-size: 1.5rem;
+    letter-spacing: .1rem;
+  }
+
+  .cfp-submit-btn:hover {
+    background-color: #b81845;
+  }
+
+  .cfp-footer-note {
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    line-height: calc(1 + .8 / var(--font-body-scale));
+    letter-spacing: .06rem;
+    font-weight: 400;
+    color: #333;
+  }
+
+  .cfp-action-links {
+    display: flex;
+    justify-content: space-between;
+    max-width: 450px;
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+
+  .cfp-action-link, .cfp-share-button {
+    text-decoration: none;
+    gap: 8px;
+    transition: opacity 0.3s ease;
+    font-size: 1.4rem!important;
+    display: flex;
+    align-items: center;
+    color: rgb(var(--color-link));
+    margin-left: 0;
+    padding-left: 0;
+    min-height: 4.4rem;
+    font-weight: 600!important;
+  }
+
+  .cfp-share-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .cfp-action-link:hover {
+    opacity: 0.7;
+  }
+
+  @media screen and (min-width: 768px) {
+    .cfp-container-{{ section.id }} {
+      flex-direction: row;
+      align-items: stretch;
+    }
+    .cfp-image-col, 
+    .cfp-info-col {
+      width: 50%;
+    }
+    .cfp-info-col {
+      padding: 60px 50px;
+    }
+  }
+</style>
+
+<div class="cfp-section-{{ section.id }}">
+  <div class="cfp-container-{{ section.id }}">
+    
+    <div class="cfp-image-col">
+      {%- if section.settings.custom_image != blank -%}
+        <img 
+          src="{{ section.settings.custom_image | image_url: width: 1000 }}" 
+          alt="{{ section.settings.custom_image.alt | escape }}"
+          width="{{ section.settings.custom_image.width }}"
+          height="{{ section.settings.custom_image.height }}"
+          loading="lazy">
+      {%- elsif target_product != blank and target_product.featured_image != blank -%}
+        <img 
+          src="{{ target_product.featured_image | image_url: width: 1000 }}" 
+          alt="{{ target_product.title | escape }}"
+          width="{{ target_product.featured_image.width }}"
+          height="{{ target_product.featured_image.height }}"
+          loading="lazy">
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+
+    <div class="cfp-info-col">
+      <h2 class="cfp-title">{{ target_product.title | default: 'BHUT BOMB' }}</h2>
+      
+      <div class="cfp-price-block">
+        {%- if target_product != blank -%}
+          Rs. {{ target_product.price | money_without_currency }} {{ cart.currency.iso_code }}
+        {%- else -%}
+          Rs. 500.00 INR
+        {%- endif -%}
+      </div>
+      
+      <div class="cfp-taxes">Taxes included.</div>
+
+      <div class="cfp-description">
+        {{ section.settings.custom_description }}
+      </div>
+
+      {%- comment -%} INSERTED TICKER BOX {%- endcomment -%}
+      <div class="cartel-ticker-box">
+        <div class="cartel-status-label">
+          <span class="red-dot"></span>LIMITED SUPPLY
+        </div>
+        <div class="cartel-inventory-numbers">
+          <span class="cartel-current" data-target="{{ current_inventory }}">{{ current_inventory }}</span><span class="cartel-slash">/</span><span class="cartel-total">{{ total_inventory }}</span>
+        </div>
+      </div>
+
+      {%- if target_product != blank -%}
+        {%- form 'product', target_product, class: 'cfp-form' -%}
+          <input type="hidden" name="id" value="{{ target_product.selected_or_first_available_variant.id }}">
+          
+          <button type="submit" class="cfp-submit-btn">
+            {{ section.settings.button_text }}
+          </button>
+          
+          {%- if section.settings.show_dynamic_checkout -%}
+            {{ form | payment_button }}
+          {%- endif -%}
+        {%- endform -%}
+      {%- else -%}
+        <div class="cfp-form">
+          <button class="cfp-submit-btn">{{ section.settings.button_text }}</button>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.footer_note != blank -%}
+        <div class="cfp-footer-note">{{ section.settings.footer_note }}</div>
+      {%- endif -%}
+
+      <div class="cfp-action-links">
+        <button type="button" class="cfp-action-link cfp-share-button" data-url="{{ shop.url }}{{ target_product.url }}" data-title="{{ target_product.title | escape }}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+          Pass the Stash
+        </button>
+
+        <a href="{{ target_product.url | default: '#' }}" class="cfp-action-link">
+          Read the Case File
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // --- SHARE BUTTON LOGIC ---
+    const shareButton = document.querySelector('.cfp-section-{{ section.id }} .cfp-share-button');
+    if (shareButton) {
+      shareButton.addEventListener('click', async () => {
+        const shareUrl = shareButton.getAttribute('data-url');
+        const shareTitle = shareButton.getAttribute('data-title');
+        
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: shareTitle,
+              text: 'Check out ' + shareTitle,
+              url: shareUrl
+            });
+          } catch (err) {
+            if (err.name !== 'AbortError') {
+              console.error('Error sharing:', err);
+            }
+          }
+        } else {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('Link copied to clipboard!');
+          }).catch(err => {
+            console.error('Failed to copy text: ', err);
+          });
+        }
+      });
+    }
+
+    // --- SCROLL ANIMATION COUNT UP LOGIC ---
+    const sectionContainer = document.querySelector('.cfp-section-{{ section.id }}');
+    if (!sectionContainer) return;
+
+    const currentCountElement = sectionContainer.querySelector('.cartel-current');
+    
+    if (currentCountElement) {
+      // Get the target number from the data attribute
+      const targetNumber = parseInt(currentCountElement.getAttribute('data-target'), 10);
+      
+      // Only animate if it's a valid number greater than 0
+      if (!isNaN(targetNumber) && targetNumber > 0) {
+        
+        // Hide the number initially by setting it to 0
+        currentCountElement.textContent = '0';
+        
+        const duration = 4000; // Animation duration in milliseconds
+        const frameRate = 1000 / 60; // Target 60 FPS
+        const totalFrames = Math.round(duration / frameRate);
+        
+        // Ease-out function for smoother slowing effect at the end
+        const easeOutExpo = (t) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+
+        const animateCount = () => {
+          let frame = 0;
+          const counter = setInterval(() => {
+            frame++;
+            const progress = easeOutExpo(frame / totalFrames);
+            currentCountElement.textContent = Math.round(targetNumber * progress);
+
+            // Once we hit total frames, stop and ensure exact number is displayed
+            if (frame >= totalFrames) {
+              clearInterval(counter);
+              currentCountElement.textContent = targetNumber; 
+            }
+          }, frameRate);
+        };
+
+        // Create the intersection observer to trigger when scrolled into view
+        const observerOptions = {
+          root: null,
+          rootMargin: '-30px',
+          threshold: 0.1 // Triggers when at least 10% of the element is visible
+        };
+
+        const countObserver = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              animateCount();
+              obs.unobserve(entry.target); // Stop observing after it runs once
+            }
+          });
+        }, observerOptions);
+
+        countObserver.observe(currentCountElement);
+      }
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Cartel Featured Product",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f4a27e"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Selected Product"
+    },
+    {
+      "type": "number",
+      "id": "total_inventory",
+      "label": "Total Batch Supply (Total Count)",
+      "default": 500,
+      "info": "Since Shopify only tracks remaining inventory, enter your starting batch number here to act as the denominator."
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_image",
+      "label": "Custom Large Image",
+      "info": "Overrides the default product featured image."
+    },
+    {
+      "type": "richtext",
+      "id": "custom_description",
+      "label": "Custom Description",
+      "default": "<p>India's hottest chilli, cooked low and slow into full spectrum flavour — smoky, caramel, and layered. Get Your Flavour Fix.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Add to Cart Button Text",
+      "default": "Score Yours Now *"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout buttons",
+      "info": "Displays the default 'Buy it now' button alongside add to cart.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "footer_note",
+      "label": "Footer Note",
+      "default": "* Available on preorder only"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cartel Featured Product",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}
