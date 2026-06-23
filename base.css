@@ -1,0 +1,108 @@
+/* Theme default  CSS above here */
+
+/* Custom CSS below here */
+
+.product-form__buttons .product-form__submit {
+  display: none!important;
+}
+
+/* -- CUSTOM: Change unbranded dynamic checkout button text to Preorder Now -- */
+
+.shopify-payment-button__button--unbranded {
+  color: transparent !important; /* Hides the original "Buy it now" text */
+  position: relative;
+}
+
+.shopify-payment-button__button--unbranded::after {
+  content: "Score Yours Now *";
+  color: #ffffff; /* Change this hex code if your button text isn't white */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem; /* Adjust this to match your theme's font size */
+  width: 99%;
+  text-align: center;
+  pointer-events: none; /* Ensures the button remains clickable underneath */
+}
+
+
+svg {
+  margin: auto;
+}
+svg#one {
+  margin-right: 1rem;
+}
+svg#two {
+  margin-left: 1rem;
+}
+
+#lid {
+  animation: blink 1.5s infinite;
+}
+#eye {
+  animation: squeeze 1.5s infinite;
+}
+
+@keyframes blink {
+  75% {
+    transform: none;
+    animation-timing-function: ease-in;
+  }
+  85% {
+    transform: translateY(15px) scaleY(0)
+  }
+  100% {
+    animation-timing-function: ease-out;
+  }
+}
+@keyframes squeeze {
+  75% {
+    transform: none;
+    animation-timing-function: ease-in;
+  }
+  85% {
+    transform: translateY(3px) scaleY(0.8)
+  }
+  100% {
+    animation-timing-function: ease-out;
+  }
+}
+
+.custombb-header-row {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: row;
+}
+
+.custombb-header-row h2 {
+  margin-bottom: 0!important;
+  margin-top: 0!important;
+}
+
+.customAnnouncementBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+  }
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+  }
+}
+
+.customAnnouncementBar svg {
+  fill: #ffffff;
+  transform-origin: center center;
+  animation: pulseGlow 1.5s infinite ease-in-out;
+}
+.customAnnouncementBar span {
+margin-top: 5px;
+}
