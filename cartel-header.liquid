@@ -1,0 +1,76 @@
+<style>
+  .cartel-header-wrapper {
+    background-color: #101010;
+    color: #ffffff;
+    font-family: "Bebas Neue", sans-serif;
+    padding: 40px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cartel-content-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .cartel-h1-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .cartel-heading {
+    font-size: calc(var(--font-heading-scale) * 6rem);
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .cartel-subheading {
+    letter-spacing: 3px!important;
+  }
+
+  .cartel-subheading .orange-highlight {
+    color: #F7966B!important;
+  }
+
+  .cartel-subheading .pink-highlight {
+    color: #DA1D52!important;
+  }
+</style>
+
+<div class="cartel-header-wrapper">
+  <div class="cartel-content-inner">
+    <div class="cartel-h1-container">
+      <h1 class="cartel-heading">{{ section.settings.heading_text }}</h1>
+      <h2 class="cartel-subheading">India’s 1st <span class="orange-highlight">Caramelised</span> <span class="pink-highlight">Chilli</span> Oil</h2>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cartel Header - Title",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "GET YOUR FIX"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cartel Header - Title",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
