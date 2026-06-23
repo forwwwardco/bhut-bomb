@@ -121,10 +121,9 @@ margin-top: 5px;
   padding-bottom: 150px!important;
 }
 
-.pol-u {
-  padding-left: 0;
+div.pol-u {
+  padding-left: 0!important;
 }
-.pol-lis-i {
-  display: block;
+div.pol-lis-i {
+  display: block!important;
 }
-
